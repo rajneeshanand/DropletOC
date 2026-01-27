@@ -1,7 +1,7 @@
 # Optimal_Transport_and_Control_of_a_Drop_in_a_Microchannel
-# 1. Mass Conservation — Weak Form Derivation
+# 1. Mass Conservation — Weak and Variational Forms
 
-We begin with the mass conservation equation for a height field \( h(x,t) \) and flux \( q(x,t) \):
+We begin with the governing conservation law for the film height \( h(x,t) \) and flux \( q(x,t) \):
 
 $$
 \frac{\partial h}{\partial t} + \frac{\partial q}{\partial x} = 0,
@@ -9,35 +9,38 @@ $$
 $$
 
 Here:
-- \( h(x,t) \): film thickness (or height),
-- \( q(x,t) \): volumetric flux in the \(x\)-direction,
-- \( \Omega \): 1D spatial domain (e.g. \([0,L]\)).
+- \(h(x,t)\): film thickness,
+- \(q(x,t)\): volumetric flux,
+- \(\Omega\): 1D domain (e.g., \([0,L]\)).
 
 ---
 
 ## 1.1 Weak Form
 
-To derive the weak form, multiply the PDE by a **test function** \( v(x) \) and integrate over the domain:
+Multiply the PDE by a **test function** \(v(x)\) and integrate over \(\Omega\):
 
 $$
 \int_\Omega 
-\frac{\partial h}{\partial t} \, v \, dx
-\;+\;
+\frac{\partial h}{\partial t}\, v \, dx
++
 \int_\Omega
-\frac{\partial q}{\partial x} \, v \, dx
+\frac{\partial q}{\partial x}\, v \, dx
 = 0.
 $$
 
-Now integrate the second term by parts:
+### Integration by parts
+
+For the second term,
 
 $$
-\int_\Omega \frac{\partial q}{\partial x} v \, dx
+\int_\Omega \frac{\partial q}{\partial x} \, v \, dx
 =
-- \int_\Omega q \, \frac{\partial v}{\partial x} \, dx
-+ \left[ q\,v \right]_{\partial\Omega}.
+- \int_\Omega q \, v_x \, dx
++
+\left[ q\,v \right]_{\partial\Omega}.
 $$
 
-Assuming **no-flux boundary conditions**
+Assuming **no–flux boundary condition**
 
 $$
 q = 0 \quad \text{on } \partial\Omega,
@@ -46,61 +49,50 @@ $$
 the boundary term vanishes:
 
 $$
-\left[ q\,v \right]_{\partial\Omega} = 0.
+\left[ q\,v \right]_{\partial\Omega}=0.
 $$
 
-Therefore, the weak form becomes:
+Thus the weak form is:
 
 $$
 \int_\Omega 
-\frac{\partial h}{\partial t} \, v \, dx
-\;-\;
+\frac{\partial h}{\partial t}\, v \, dx
+-
 \int_\Omega 
-q \, v_x \, dx
-= 0,
-\qquad \forall v(x).
+q \, v_x\, dx
+= 0.
 $$
 
 ---
 
 ## 1.2 Time Discretization (Backward Euler)
 
-Approximate the time derivative using
+Approximate the time derivative with:
 
 $$
 \frac{\partial h}{\partial t}
-\approx
-\frac{h^{n+1} - h^n}{\Delta t}.
+\approx 
+\frac{h^{n+1} - h^{n}}{\Delta t}.
 $$
 
-Substituting gives:
+Insert into the weak form:
 
 $$
 \int_\Omega 
-\frac{h^{n+1} - h^n}{\Delta t} \, v \, dx
-\;-\;
+\frac{h^{n+1} - h^{n}}{\Delta t} \, v \, dx
+-
 \int_\Omega 
-q^{n+1} \, v_x \, dx
+q^{\,n+1} \, v_x\, dx
 = 0.
 $$
 
-We now treat \( h^{n+1} \) as the **trial function** (unknown at the new time step).  
-Thus the semi-discrete weak form is:
-
-$$
-\int_\Omega 
-\frac{h - h^n}{\Delta t} \, v \, dx
-\;-\;
-\int_\Omega 
-q(h) \, v_x \, dx
-= 0.
-$$
+We now treat \( h^{n+1}(x) \) as the **trial function** to be solved.
 
 ---
 
-## 1.3 Auxiliary Second-Derivative Equation
+## 1.3 Auxiliary Equation for the Second Derivative
 
-To compute the curvature term \( h_{xx} \), we introduce an auxiliary variable
+To compute curvature terms involving \(h_{xx}\), introduce an auxiliary variable:
 
 $$
 \text{d2h}(x) = h_{xx}(x).
@@ -112,40 +104,39 @@ $$
 \text{d2h} - h_{xx} = 0.
 $$
 
-Multiply by a test function \( u(x) \) and integrate:
+Multiply by a test function \(u(x)\) and integrate:
 
 $$
-\int_\Omega \text{d2h} \, u\, dx
+\int_\Omega \text{d2h}\, u\, dx
 -
-\int_\Omega h_{xx} \, u \, dx
+\int_\Omega h_{xx}\, u\, dx
 = 0.
 $$
 
-Integrate the second term by parts:
+### Integration by parts
 
 $$
-- \int_\Omega h_{xx} \, u \, dx
+- \int_\Omega h_{xx}\, u\, dx
 =
-\int_\Omega h_x \, u_x \, dx
+\int_\Omega h_x\, u_x\, dx
 -
-\left[ h_x u \right]_{\partial\Omega}.
+\left[ h_x\,u \right]_{\partial\Omega}.
 $$
 
-Under natural boundary conditions \( h_x = 0 \) at \( \partial\Omega \):
+Assuming natural BCs \(h_x = 0\) on \(\partial\Omega\):
 
 $$
-\left[ h_x u \right]_{\partial\Omega} = 0.
+\left[ h_x\,u \right]_{\partial\Omega} = 0.
 $$
 
-So the weak form becomes:
+Final weak form:
 
 $$
-\int_\Omega \text{d2h}\, u \, dx
+\int_\Omega \text{d2h}\, u\, dx
 +
-\int_\Omega h_x \, u_x \, dx
+\int_\Omega h_x\, u_x\, dx
 = 0,
-\qquad \forall u(x),
+\qquad \forall u(x).
 $$
 
-where **d2h** is the trial function approximating \(h_{xx}\).
-
+Here **d2h** is the trial function that approximates the second derivative \(h_{xx}\).

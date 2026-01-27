@@ -1,2 +1,51 @@
 # Optimal_Transport_and_Control_of_a_Drop_in_a_Microchannel
-Partial Differential Equations: Numerical NotesWelcome to my study notes on solving PDEs. This section focuses on deriving the Weak Form from the Mass Conservation equation, which is a fundamental step in numerical methods like FEM.1. Mass Conservation DerivationWe start with the standard continuity equation (Mass Conservation):$$\frac{\partial h}{\partial t} + \frac{\partial q}{\partial x} = 0$$Step A: The Test FunctionTo move toward a numerical solution, we multiply by a test function $v(x)$ and integrate over the entire domain $\Omega$:$$\int_{\Omega} \frac{\partial h}{\partial t} v \, dx + \int_{\Omega} q_x v \, dx = 0$$Step B: Integration by Parts (The "Weak" Move)We apply integration by parts to the flux term ($\int q_x v \, dx$). This "weakens" the derivative requirement on $q$:$$\int_{\Omega} \frac{\partial h}{\partial t} v \, dx - \int_{\Omega} q \frac{\partial v}{\partial x} \, dx + [qv]_{\partial\Omega} = 0$$Note on Boundary Conditions (BCs): > If we assume "No Flux" on the boundary ($q=0$ at the edges), the boundary term $[qv]_{\partial\Omega}$ drops out (becomes $0$).Step C: Temporal DiscretizationTo solve this over time, we discretize the time derivative using a finite difference (usually Forward Euler):$$\frac{\partial h}{\partial t} \approx \frac{h^{n+1} - h^n}{\Delta t}$$Substituting this back in, we get the integral form where $h$ is our trial function (the unknown we are solving for at the next time step):$$\int_{\Omega} \frac{h^{n+1} - h^n}{\Delta t} v \, dx - \int_{\Omega} q^\theta v_x \, dx = 0$$2. Auxiliary Equation: Second-Order TermsSometimes we need to handle second-order derivatives (like $h_{xx}$) by breaking them into two first-order equations.Strong Form:$$d2h - h_{xx} = 0$$Deriving the Weak Form for the Auxiliary Eq:Multiply by test function $u(x)$ and integrate:$$\int_{\Omega} (d2h)u \, dx - \int_{\Omega} h_{xx}u \, dx = 0$$Integrate by parts:$$\int_{\Omega} (d2h)u \, dx + \int_{\Omega} h_x u_x \, dx - [h_x u]_{\partial\Omega}^0 = 0$$Final Result:$$\int_{\Omega} h_x u_x \, dx + \int_{\Omega} (d2h)u \, dx = 0$$In this context, $d2h$ acts as the trial function.Key Terms to RememberTrial Function ($h$): The actual solution we are trying to find.Test Function ($v$ or $u$): A "weighting" function used to satisfy the differential equation in an integral sense.Weak Form: The version of the equation where we've reduced the order of derivatives through integration by parts, making it easier to solve numerically.
+# Numerical Methods for Partial Differential Equations
+
+## 1. Mass Conservation (Weak Form Derivation)
+
+The starting point is the **Strong Form** of the continuity equation:
+
+$$\frac{\partial h}{\partial t} + \frac{\partial q}{\partial x} = 0$$
+
+### Step 1: Weighted Residual Method
+Multiply by a **test function** $v(x)$ and integrate over the domain $\Omega$:
+
+$$\int_{\Omega} \frac{\partial h}{\partial t} v \, dx + \int_{\Omega} \frac{\partial q}{\partial x} v \, dx = 0$$
+
+### Step 2: Integration by Parts
+To reduce the continuity requirement on $q$, we shift the derivative to the test function $v$:
+
+$$\int_{\Omega} \frac{\partial h}{\partial t} v \, dx - \int_{\Omega} q \frac{\partial v}{\partial x} \, dx + \left[ qv \right]_{\partial\Omega} = 0$$
+
+> **Boundary Condition:** Assuming no flux on the boundary ($q=0$), the term $[qv]_{\partial\Omega}$ vanishes.
+
+### Step 3: Temporal Discretization
+Using a finite difference approximation for the time derivative:
+$$\frac{\partial h}{\partial t} \approx \frac{h^{n+1} - h^n}{\Delta t}$$
+
+Substituting this into the weak form:
+$$\int_{\Omega} \left( \frac{h^{n+1} - h^n}{\Delta t} \right) v \, dx - \int_{\Omega} q^\theta v_x \, dx = 0$$
+
+* **Trial Function:** $h$ (The unknown for the new time step).
+* **Test Function:** $v$.
+
+---
+
+## 2. Auxiliary Equation (Second-Order Terms)
+
+To handle second-order derivatives like $h_{xx}$, we define an auxiliary variable $d2h$:
+
+**Strong Form:**
+$$d2h - \frac{\partial^2 h}{\partial x^2} = 0$$
+
+### Weak Form Derivation
+1. **Weighted Integral:**
+   $$\int_{\Omega} (d2h)u \, dx - \int_{\Omega} h_{xx} u \, dx = 0$$
+
+2. **Integration by Parts:**
+   $$\int_{\Omega} (d2h)u \, dx + \int_{\Omega} h_x u_x \, dx - [h_x u]_{\partial\Omega} = 0$$
+
+3. **Final Auxiliary Weak Form:**
+   $$\int_{\Omega} h_x u_x \, dx + \int_{\Omega} (d2h)u \, dx = 0$$
+
+* **Trial Function:** $d2h$.

@@ -207,7 +207,7 @@ $$S^\theta = h^\theta (\text{geometry term}) + \gamma(d2h)^\theta$$
 
 ### 6. Handling non-linearities: Adams-Bashforth (AB2)
 
-When our equations include non-linear terms (like mobility $m(h)$ or disjoining pressure $\Pi(h)$), solving them purely implicitly can be a nightmare. To keep things efficient, we use **Adams-Bashforth 2nd Order (AB2)**.
+When our equations include non-linear terms like mobility $m(h)$ or disjoining pressure $\Pi(h)$, solving them purely implicitly can be a nightmare. To keep things efficient, we use **Adams-Bashforth 2nd Order (AB2)**.
 AB2 is an **explicit 2-step extrapolation**. Instead of guessing the future, we look at the current ($n$) and previous ($n-1$) time steps to predict a value for the next step ($n+1$):
 
 $$h^{\star, n+1} = \frac{3h^n}{2} - \frac{h^{n-1}}{2}$$
@@ -246,7 +246,7 @@ For **stiff linear terms** (like surface tension), we use $\theta = 0.5$. This e
 * $(d2h)^\theta = \theta (d2h)^{n+1} + (1-\theta) (d2h)^n$
 
 Adams-Bashforth (AB2) for non-linearities:
-For non-linear terms like mobility $m(h)$ and disjoining pressure $\Pi(h)$, we use an explicit 2-step extrapolation ($h^\star$) so we don't have to solve non-linear system at every step:
+For non-linear terms like mobility $m(h^\ast)$ and disjoining pressure $\Pi(h^\ast)$, we use an explicit 2-step extrapolation ($h^\star$) so we don't have to solve non-linear system at every step:
 $$h^\star = \frac{3}{2}h^n - \frac{1}{2}h^{n-1}$$
 
 By combining these, our flux $q^{n+1}$ is evaluated using "known" history for the nonlinear parts and "unknown" future variables for the stiff parts:
@@ -257,8 +257,9 @@ $$q^{n+1} = m(h^\star) \left( \partial_x \left[ h^\theta (G_0 + G_1 x) + \gamma 
 
 We need to derive the exact form of the flux $q^{n+1}$ to separate the "Knowns" from the "Unknowns".
 
-**The flux equation:**
-$$q^{n+1} = m(h^*) \left( (S^\theta)_x - \Pi_1(h^*) (h^\theta)_x \right)$$
+#### **The flux equation:**
+$$q^{n+1} = m(h^\ast) \left( (S^\theta)_x - \Pi_1(h^\ast) (h^\theta)_x \right)$$
+
 
 #### Step 1: Expand the Stress Derivative $(S^\theta)_x$
 Since $S^\theta = h^\theta(G_0 + G_1 x) + \gamma (d2h)^\theta$, the derivative is:
@@ -381,7 +382,7 @@ To solve the system efficiently, we must choose how to handle time evolution. He
 | **Implicit (CN)** | Involves "unknown" quantities at the new time step ($n+1$). | **Stable**, but requires solving a system of equations. |
 | **Semi-Implicit** | **We adapted:** Treats linear/stiff (linear) terms implicitly and nonlinear coefficients ($h^*$) explicitly. | **Best compromise:** Avoids solving nonlinear systems every step while maintaining stability. |
 
-Some may argue that why can't we solve it fully implicitly, if we treat everything implicitly (including coefficients $m(h)$ and $\Pi(h)$) we would have to solve a Nonlinear System at every single time step and is is computationally **expensive** and complex.
+Some may argue that why can't we solve it fully implicitly, if we treat everything implicitly including coefficients $m(h)$ and $\Pi(h)$ we would have to solve a Nonlinear System at every single time step and is is computationally **expensive** and complex.
 We use an implicit method primarily because the surface tension (capillarity) term is mathematically "stiff," meaning it requires very small ($10^{-8}$) time steps if solved explicitly. Let's understand it why we need implicit scheme
 
 Let's ignore the disjoining force for a moment and keep only capillarity. The equation simplifies to:

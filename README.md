@@ -105,12 +105,12 @@ $$\frac{\partial h}{\partial t} + \frac{\partial q}{\partial x} = 0$$
 #### Step 1: Weighted Residual Method
 Multiply by a **test function** $v(x)$ and integrate over the domain $\Omega$:
 
-$$\int_{\Omega} \frac{\partial h}{\partial t} v \, dx + \int_{\Omega} \frac{\partial q}{\partial x} v \, dx = 0$$
+$$\int_{\Omega} \frac{\partial h}{\partial t} v \ dx + \int_{\Omega} \frac{\partial q}{\partial x} v \ dx = 0$$
 
 #### Step 2: Integration by Parts
 To reduce the continuity requirement on $q$, we shift the derivative to the test function $v$:
 
-$$\int_{\Omega} \frac{\partial h}{\partial t} v \, dx - \int_{\Omega} q \frac{\partial v}{\partial x} \, dx + \left[ qv \right]_{\partial\Omega} = 0$$
+$$\int_{\Omega} \frac{\partial h}{\partial t} v \ dx - \int_{\Omega} q \frac{\partial v}{\partial x} \ dx + \left[ qv \right]_{\partial\Omega} = 0$$
 
 > **Boundary Condition:** Assuming no flux on the boundary ($q=0$), the term $[qv]_{\partial\Omega}$ vanishes.
 
@@ -119,7 +119,7 @@ Using a finite difference approximation for the time derivative:
 $$\frac{\partial h}{\partial t} \approx \frac{h^{n+1} - h^n}{\Delta t}$$
 
 Substituting this into the weak form:
-$$\int_{\Omega} \left( \frac{h^{n+1} - h^n}{\Delta t} \right) v \, dx - \int_{\Omega} q^\theta v_x \, dx = 0$$
+$$\int_{\Omega} \left( \frac{h^{n+1} - h^n}{\Delta t} \right) v \ dx - \int_{\Omega} q^\theta v_x \ dx = 0$$
 
 * **Trial Function:** $h$ (The unknown for the new time step).
 * **Test Function:** $v$.
@@ -136,22 +136,22 @@ $$d2h - \frac{\partial^2 h}{\partial x^2} = 0$$
 1. **Weighted Integral:**
 
    Multiply by a **test function** $u(x)$ and integrate over the domain $\Omega$:
-   $$\int_{\Omega} (d2h)u \, dx - \int_{\Omega} h_{xx} u \, dx = 0$$
+   $$\int_{\Omega} (d2h)u \ dx - \int_{\Omega} h_{xx} u \ dx = 0$$
 
 2. **Integration by Parts:**
-   $$\int_{\Omega} (d2h)u \, dx + \int_{\Omega} h_x u_x \, dx - [h_x u]_{\partial\Omega} = 0$$
+   $$\int_{\Omega} (d2h)u \ dx + \int_{\Omega} h_x u_x \ dx - [h_x u]_{\partial\Omega} = 0$$
 
 3. **Final Auxiliary Weak Form:**
-   $$\int_{\Omega} h_x u_x \, dx + \int_{\Omega} (d2h)u \, dx = 0$$
+   $$\int_{\Omega} h_x u_x \ dx + \int_{\Omega} (d2h)u \ dx = 0$$
 
 * **Trial Function:** $d2h$.
 * **Test Function:** $u$.
 
 Our system is defined by two primary equations. We treat them as **residuals**—essentially, we want the numerical solver to drive these values to zero.
 The two equations we solve are
-1.  **Mass Conservation:** $$\int_{\Omega} \frac{h - h_n}{\Delta t} v \, dx - \int_{\Omega} q(\cdot) v_x \, dx = 0$$
+1.  **Mass Conservation:** $$\int_{\Omega} \frac{h - h_n}{\Delta t} v \ dx - \int_{\Omega} q(\cdot) v_x \ dx = 0$$
 2.  **Auxiliary Equation (The link to second-order derivatives):**
-    $$\int_{\Omega} h_x u_x \, dx + \int_{\Omega} (d2h) u \, dx = 0 \quad \iff \quad d2h = h_{xx}$$
+    $$\int_{\Omega} h_x u_x \ dx + \int_{\Omega} (d2h) u \ dx = 0 \quad \iff \quad d2h = h_{xx}$$
 
 
 ### 3. Why is the Weak Form important?
@@ -232,9 +232,9 @@ $$q^{n+1} = m(h^\star) \left( \partial_x \left[ h^\theta (G_0 + G_1 x) + \gamma 
 
 After all the derivations, these are the two equations we actually solve using FEniCs. We write them in Residual Form ($F = 0$).
 
-$$\int_{\Omega} \frac{h^{n+1} - h^n}{\Delta t} v \, dx - \int_{\Omega} q^{n+1} v_x \, dx = 0$$
+$$\int_{\Omega} \frac{h^{n+1} - h^n}{\Delta t} v \ dx - \int_{\Omega} q^{n+1} v_x \ dx = 0$$
 
-$$\int_{\Omega} h_x^{n+1} u_x \, dx + \int_{\Omega} (d2h)^{n+1} u \, dx = 0$$
+$$\int_{\Omega} h_x^{n+1} u_x \ dx + \int_{\Omega} (d2h)^{n+1} u \ dx = 0$$
 
 
 This repository documents the derivation and numerical implementation of Partial Differential Equations (PDEs) for thin-film dynamics. We transform complex "Strong Form" equations into a "Weak Form" suitable for Finite Element solvers like FEniCS.
@@ -284,7 +284,7 @@ In FEniCS, we do not manually build the matrix. We define the **Residual** and l
 
 #### The Residual Structure
 $$\text{Res}(h^{n+1}, (d2h)^{n+1}; v, u) = a((h^{n+1}, (d2h)^{n+1}), (v, u) ) - L((v, u)) = 0$$
-Let  $\omega:= (h^{n+1}, (d2h)^{n+1})$ and $ \psi:=  (v, u)$
+Let  $\omega:= (h^{n+1}, (d2h)^{n+1})$ and $\psi:=(v, u)$
 
 1.  **$a(\omega, \psi)$ - Bilinear Form:**
     * Linear in unknowns ($h^{n+1}$) and test Functions ($v, u$).
@@ -303,14 +303,14 @@ In FEniCS, we solve $a(\omega, \psi) = L(\psi)$. We must go through our Weak For
 
 #### Term 1: The Time Derivative $\int \frac{h - h^n}{\Delta t} v \, dx$
 We split this fraction into two integrals:
-1.  $\int \frac{1}{\Delta t} h^{n+1} v \, dx \quad \rightarrow \quad \in \mathbf{a(\omega, \psi)}$ (Unknown)
-2.  $- \int \frac{1}{\Delta t} h^n v \, dx \quad \rightarrow \quad \in \mathbf{L(\psi)}$ (Known)
+1.  $\int \frac{1}{\Delta t} h^{n+1} v \ dx \quad \rightarrow \quad \in \mathbf{a(\omega, \psi)}$ (Unknown)
+2.  $- \int \frac{1}{\Delta t} h^n v \ dx \quad \rightarrow \quad \in \mathbf{L(\psi)}$ (Known)
 
-#### Term 2: The Flux Integral $-\int q v_x \, dx$
-1.  $-\int q_{\text{known}} v_x \, dx \quad \rightarrow \quad \in \mathbf{L_{\text{flux}}(\psi)}$
-2.  $-(1-\theta) \int m(h^*) \left[ \dots \text{complex terms} \dots \right] v_x \, dx \quad \rightarrow \quad \in \mathbf{a_{\text{flux}}(\omega, \psi)}$
+#### Term 2: The Flux Integral $-\int q v_x \ dx$
+1.  $-\int q_{\text{known}} v_x \ dx \quad \rightarrow \quad \in \mathbf{L_{\text{flux}}(\psi)}$
+2.  $-(1-\theta) \int m(h^*) \left[ \dots \text{complex terms} \dots \right] v_x \ dx \quad \rightarrow \quad \in \mathbf{a_{\text{flux}}(\omega, \psi)}$
 
-#### Terms 3 & 4: The Auxiliary Equation $\int h_x u_x \, dx + \int (d2h) u \, dx = 0$.
+#### Terms 3 & 4: The Auxiliary Equation $\int h_x u_x \ dx + \int (d2h) u \ dx = 0$.
 
 * $h$ and $d2h$ are both unknowns (Trial Functions) at step $n+1$, these terms are purely Bilinear.
 * Both belong to $\mathbf{a(\omega, \psi)}$.
@@ -364,7 +364,7 @@ $$
 
 | Vector | Corresponding integral term | Physical significance |
 | :--- | :--- | :--- |
-| **$\mathbf{b}_h$** | $\int \frac{h^n}{\Delta t} v \, dx - \int q_{\text{known}} v_x \, dx$ | History: The state of the film from the previous time step. |
+| **$\mathbf{b}_h$** | $\int \frac{h^n}{\Delta t} v \ dx - \int q_{\text{known}} v_x \ dx$ | History: The state of the film from the previous time step. |
 | **$\mathbf{b}_{d2h}$** | $0$ | Usually zero (unless specific boundary conditions apply). |
 
 
@@ -412,7 +412,7 @@ This solver relies on the **Legacy FEniCS** framework (2019.1.0) and several sta
 
 #### Core Finite Element solver
 * **`fenics`**: The primary Finite Element Method (FEM) library. It handles mesh generation, function space definitions ($V, R$), and the assembly of the global linear system ($A\mathbf{x} = \mathbf{b}$).
-* **`ufl`** (Unified Form Language): Its is used to symbolically define the weak forms. It allows us to write the integral equations (e.g., `inner(grad(h), grad(v))*dx`) in a syntax that closely mimics the mathematical notation in the notes.
+* **`ufl`** (Unified Form Language): Its is used to symbolically define the weak forms. It allows us to write the integral equations (e.g., `inner(grad(h), grad(v))dx`) in a syntax that closely mimics the mathematical notation in the notes.
 
 #### Numerical Operations
 * **`numpy`**: Essential for handling array operations, time-stepping loops, and manipulating the vectors of coefficients ($H_j, D_j$) outside of the FEniCS objects.
@@ -479,7 +479,7 @@ $$
 We want droplet transport to be energy-efficient. This term penalizes the mechanical work done against viscous forces during the motion.
 
 $$
-J_{\text{viscous}} = \int_0^T \int_{\Omega} \frac{h^3}{12\eta} (\partial_x \sigma)^2 \, dx \, dt
+J_{\text{viscous}} = \int_0^T \int_{\Omega} \frac{h^3}{12\eta} (\partial_x \sigma)^2 \ dx \ dt
 $$
 
 * **Code:** Calculated via `assemble()` at every time step using the cumulative sum variable `J`.
@@ -498,7 +498,7 @@ $$
 To prevent the optimizer from selecting erratic, high-frequency switching (which is unphysical to implement experimentally), we penalize the rate of change of the controls.
 
 $$
-J_{\text{reg}} = \alpha \sum_{i} \left( \frac{\Delta G_i}{\Delta t} \right)^2
+J_{\text{reg}} = \alpha \sum_{i} \left( \frac{G_0}{\Delta t} \right)^2 + \left( \frac{\Delta G}{\Delta t} \right)^2
 $$
 
 * **Code:**
@@ -552,9 +552,9 @@ The specific parameters used in this study are tuned for high-dimensional stabil
 | :--- | :--- | :--- |
 | `population_size` | 20 | Matches the number of available CPU cores for maximum parallel efficiency. |
 | `cma_initial_sigma` | 0.2 | Initial exploration variance. Set to 20% of unit magnitude to encourage broad search. |
-| `control_bound` | `[-20, 20]` | Keeps active stress within the physical limits of the thin-film approximation. |
-| `cma_min_iterations` | 65000 | Forces a "burn-in" period. Even if the solution looks good early, the solver is forced to refine it further. |
-| `cma_max_iterations` | 80000 | Maximum generation cap to prevent infinite loops. |
+| `control_bound` | [-20, 20] | Keeps active stress within the physical limits of the thin-film approximation. |
+| `cma_min_iterations` | $7.5*10^4$ | Forces a "burn-in" period. Even if the solution looks good early, the solver is forced to refine it further. |
+| `cma_max_iterations` | $8*10^4$ | Maximum generation cap to prevent infinite loops. |
 
 ### 6. Output & Visualization
 Upon successfully execution of `PDE_solver.py` and all data will be saved, the script `PDE_visualize.py` generates several key data artifacts in the `outcmaes/` directory:

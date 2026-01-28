@@ -4,12 +4,13 @@
 
 This repository contains a computational framework for designing energy-efficient strategies to transport fluid droplets in confined geometries (see Fig. 1). By integrating **Optimal Control Theory** with **Lubrication Theory**, we address the inverse problem of fluid dynamics: rather than simply observing how a droplet moves, we calculate the precise time-dependent control signals required to transport it to a specific target.
 
-<p align="center">
+<p>
+  <br>
   <img src="readme_images/Overview.png" alt="CMA-ES Workflow Diagram" width="100%">
   <br>
   <em>
     <strong>Fig. 1: Optimal Transport Schematic.</strong>
-    The diagram illustrates the optimal motion of a droplet as it moves from its initial position and size $(X_0, R_0)$ to a desired target state $(X_T, R_T)$. The system follows a control protocol specifically designed to minimize viscous dissipation while transporting the droplet through the microchannel.
+    The diagram illustrates the optimal motion of a droplet as it moves from its initial position and size to a desired target state. The system follows a control protocol specifically designed to minimize viscous dissipation while transporting the droplet through the microchannel.
   </em>
 </p>
 
@@ -356,10 +357,10 @@ $$
 
 | Matrix block | Corresponding integral term | Physical significance |
 | :--- | :--- | :--- |
-| **$\mathbf{A}_{hh}$** | $\int \frac{1}{\Delta t} h v \, dx - \int q(h) v_x \, dx  \quad \quad \quad $ | Mass & Transport: Contains the time derivative and flux terms involving height $h$ (Gravity). |
-| **$\mathbf{A}_{h,d2h}$** | $-\int \gamma (d2h)_x v_x \, dx$ | Capillarity: The flux term driven by the gradient of curvature (Surface Tension). |
-| **$\mathbf{A}_{d2h,h}$** | $\int h_x u_x \, dx$ | Geometry: The weak form of the second derivative definition ($d2h = h_{xx}$). |
-| **$\mathbf{A}_{d2h,d2h}$** | $\int (d2h) u \, dx$ | Mass Matrix (Auxiliary): The identity-like term connecting the auxiliary variable to itself. |
+| **$\mathbf{A}_{hh}$** | $\int \frac{1}{\Delta t} h v \ dx - \int q(h) v_x \ dx  \quad \quad \quad $ | Mass & Transport: Contains the time derivative and flux terms involving height $h$ (Gravity). |
+| **$\mathbf{A}_{h,d2h}$** | $-\int \gamma (d2h)_x v_x \ dx$ | Capillarity: The flux term driven by the gradient of curvature (Surface Tension). |
+| **$\mathbf{A}_{d2h,h}$** | $\int h_x u_x \ dx$ | Geometry: The weak form of the second derivative definition ($d2h = h_{xx}$). |
+| **$\mathbf{A}_{d2h,d2h}$** | $\int (d2h) u \ dx$ | Mass Matrix (Auxiliary): The identity-like term connecting the auxiliary variable to itself. |
 
 | Vector | Corresponding integral term | Physical significance |
 | :--- | :--- | :--- |
@@ -500,41 +501,37 @@ $$
 
 The optimization loop in the code follows a generational cycle (see Fig. 2).
 
-**Sampling ("Ask"):**
-
-<table>
-<tr>
-<td width="55%" style="border:none;">
-    The optimizer generates 20 candidate control vectors from a normal distribution:
+#### 1. Sampling ("Ask"):
+The optimizer generates 20 candidate control vectors from a normal distribution:
     $$G_k \sim \mathcal{N}(\mathbf{m}, \sigma^2 \mathbf{C})$$
 
-     $\mathbf{m}$: Current best-guess mean vector.
-     $\mathbf{\sigma}$: Step size (exploration radius).
-     $\mathbf{C}$: Covariance matrix (defines the search ellipsoid).
+* $\mathbf{m}$: Current best-guess mean vector.
+* $\sigma$: Step size (exploration radius).
+* $\mathbf{C}$: Covariance matrix (defines the search ellipsoid).
 
-</td>
-<td width="55%" style="border:none;">
-
-
-<img src="readme_images/CMAES.png" alt="CMA-ES Workflow Diagram" width="100%">
-
-<p align="center"><em>Fig. 2: CMA-ES Optimization loop </em></p>
-</td>
-</tr>
-</table>
+<p align="center">
+  <img src="readme_images/CMAES.png" alt="CMA-ES Workflow Diagram" width="100%">
+  <br>
+  <em>
+    <strong>Fig. 2:</strong>
+    Population-based stochastic evolutionary algorithm with covariance matrix adaptation (CMA-ES)
+  </em>
+</p>
 
 
-**Parallel Evaluation:**
-    Using `cma.fitness_transformations.EvalParallel2`, the code spins up 20 parallel processes (matching `population_size`).
-    * Each core runs one instance of the FEniCS solver `run_forward_simulation(G)`.
-    * Failure Handling: If the PDE solver crashes (e.g., `Negative height` due to instability) or produces infinite cost, the function returns `NaN` or `Inf`, effectively killing that member of the population so it does not contribute to the next generation.
 
-**Update ("Tell"):**
-    The costs are collected, and CMA-ES updates its internal parameters:
-    * **Selection:** The best 50% of the population is used to update the mean $\mathbf{m}$.
-    * **Adaptation:** The Covariance Matrix $J$ is updated to increase the probability of sampling successful directions in the future. This allows the algorithm to learn correlations (e.g., "if $G_0$ increases, $G_1$ must decrease").
+#### 2. Parallel Evaluation:
+Using ```cma.fitness_transformations.EvalParallel2```, the code spins up 20 parallel processes (matching ```population_size```).
+    
+* Each core runs one instance of the FEniCS solver ```run_forward_simulation(G)```.
 
+* Failure Handling: If the PDE solver crashes (e.g., Negative height due to instability) or produces infinite cost, the function returns ```NaN``` or ```Inf```, effectively killing that member of the population so it does not contribute to the next generation.
 
+#### 3. Update ("Tell"):
+The costs are collected, and CMA-ES updates its internal parameters:
+
+* **Selection:** The best 50% of the population is used to update the mean $\mathbf{m}$.
+* **Adaptation:** The Covariance Matrix $J$ is updated to increase the probability of sampling successful directions in the future. This allows the algorithm to learn correlations.
 
 ### 5. Hyperparameter Configuration
 The specific parameters used in this study are tuned for high-dimensional stability:

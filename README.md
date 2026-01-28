@@ -429,9 +429,8 @@ This solver relies on the **Legacy FEniCS** framework (2019.1.0) and several sta
 While the Finite Element Method (FEM) solves the **Forward Problem** (given controls, calculate droplet motion), the core objective of this project is the inverse Problem: finding the optimal time-dependent control protocols to force the droplet into a specific target state.
 
 We formulate this as a constrained minimization problem:
-$$
-\min_{G} J(G) \quad \text{subject to} \quad \text{PDE constraints (thin-film equation)}
-$$
+$\min_{G} J(G)$ subject to PDE constraints (thin-film equation)
+
 * $G$ is the vector of control parameters.
 * $J(G)$ is a cost functional quantifying energy efficiency and accuracy.
 
@@ -452,20 +451,24 @@ Standard gradient-based optimization methods (like Newton-Raphson or BFGS) are u
 
 ### 3. Implementation details
 
-#### 3.1. The Control Variables (G)
+#### 3.1. The Control Variables ($G$)
+
 The stress in the film is modeled physically as:
+
 $$
-\sigma =  h(x,t) [G_0(t) + x G_1(t)]
+\sigma = h(x,t) [G_0(t) + x G_1(t)]
 $$
 
 The optimizer controls the two time-dependent functions $G_0(t)$ and $G_1(t)$.
+
 * **Discretization:** These functions are not continuous but are discretized into piecewise linear segments over time intervals of size `dt_G` (typically larger than the simulation time step `dt`).
-* **The Genome:** The optimizer manipulates a flattened vector G of length $2 \times (T / dt_G)$:
-$$
-G = [G_0(t_0), G_1(t_0), G_0(t_1), G_1(t_1), \dots, G_0(T), G_1(T)]
-$$
+* **The Genome:** The optimizer manipulates a flattened vector $G$ of length $2 \times (T / dt_G)$:
+  
+  G = $[G_0(t_0), G_1(t_0), G_0(t_1), G_1(t_1), \dots, G_0(T), G_1(T)]$
+
 
 #### 3.2. The Objective Function ($J$)
+
 The fitness of any given control protocol is evaluated by the `evaluate_cost(control_vector)` function in the Python code. The total cost is a weighted sum of three competing physical goals:
 
 $$
@@ -474,28 +477,37 @@ $$
 
 #### A. Viscous Dissipation ($J_{\text{work}}$)
 We want droplet transport to be energy-efficient. This term penalizes the mechanical work done against viscous forces during the motion.
+
 $$
 J_{\text{viscous}} = \int_0^T \int_{\Omega} \frac{h^3}{12\eta} (\partial_x \sigma)^2 \, dx \, dt
 $$
+
 * **Code:** Calculated via `assemble()` at every time step using the cumulative sum variable `J`.
 * **Physics:** Minimizing this ensures the droplet moves smoothly without unnecessary deformations or rapid accelerations that waste energy.
 
 #### B. Terminal Penalty ($J_{\text{terminal}}$)
 This term enforces the target conditions. We want the drop to end at a specific location $X_T$ with a specific radius $R_T$.
+
 $$
 J_{\text{terminal}} = A \frac{(X_{\text{final}} - X_T)^2}{X_T^2} + B \frac{(R_{\text{final}} - R_T)^2}{R_T^2}
 $$
-* **Weights:** In the code, `penalty_size` are set to high values ($10^3$). This treats the target as a "soft constraint"— technically violating it is allowed, but it incurs a massive cost penalty.
+
+* **Weights:** In the code, `penalty_size` are set to high values ($10^3$). This treats the target as a "soft constraint"—technically violating it is allowed, but it incurs a massive cost penalty.
 
 #### C. Regularization ($J_{\text{regularization}}$)
 To prevent the optimizer from selecting erratic, high-frequency switching (which is unphysical to implement experimentally), we penalize the rate of change of the controls.
+
 $$
 J_{\text{reg}} = \alpha \sum_{i} \left( \frac{\Delta G_i}{\Delta t} \right)^2
 $$
-* **Code:** `regularization_term = ((temporal_smoothing / control_dt) * (np.sum(offset_jump * offset_jump) + np.sum(gradient_jump * gradient_jump)))
-`
-* **Effect:** This acts as a "smoothing" filter, forcing the optimizer to find gradual, and continuous control protocols.
 
+* **Code:**
+  ```python
+  regularization_term = (temporal_smoothing / control_dt) * (
+      np.sum(offset_jump**2) + np.sum(gradient_jump**2)
+  )
+
+* **Effect:** This acts as a "smoothing" filter, forcing the optimizer to find gradual, and continuous control protocols.
 
 ### 4. The CMA-ES workflow
 

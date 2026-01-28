@@ -274,8 +274,9 @@ The known terms (terms with $n$) are multiplied by $\theta$ (from the CN definit
 #### Step 3: The final flux assembly
 We multiply by the mobility $m(h^{*})$ and subtract the disjoining pressure term.
 
-$$q^{n+1} = \underbrace{q_{\text{known}}(h^n, d2h^n)}_{\text{Known (goes to RHS)}} + \underbrace{(1-\theta) m(h^*) \left[ (G_0 + G_1 x)h^{n+1}_x + G_1 h^{n+1} + \gamma (d2h)^{n+1}_x - \Pi_1(h^*) h^{n+1}_x \right]}_{\text{Unknown (Linear in } h^{n+1}, \text{goes to LHS})}$$
-
+$$
+q^{n+1} = \underbrace{q_{\text{known}}(h^n, \partial_{xx}h^n)}_{\text{Known (goes to RHS)}} + \underbrace{(1-\theta) m(h^*) \left[ \underbrace{(G_0 + G_1 x)\partial_x h^{n+1} + G_1 h^{n+1}}_{\text{Control Stress}} + \gamma \partial_x (\partial_{xx} h^{n+1}) - \Pi'(h^*) \partial_x h^{n+1} \right]}_{\text{Unknown (Linear in } h^{n+1}, \text{goes to LHS})}
+$$
 
 
 In FEniCS, we do not manually build the matrix. We define the **Residual** and let FEniCS split it.

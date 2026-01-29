@@ -9,7 +9,7 @@ This repository contains a computational framework for designing energy-efficien
   <img src="readme_images/Overview.png" alt="CMA-ES Workflow Diagram" width="100%">
   <br>
   <em>
-    <strong>Fig. 1: Optimal droplet tranport</strong>
+    <strong>Fig. 1: Optimal droplet tranport. </strong>
     The diagram illustrates the optimal motion of a droplet as it moves from its initial position and size to a desired target state. The system follows a control protocol specifically designed to minimize viscous dissipation while transporting the droplet through the microchannel.
   </em>
 </p>

@@ -42,6 +42,7 @@ To validate the reduced model, we solve the transport problem directly using the
 
 
 --------------------------------------
+--------------------------------------
 
 ## 1. Reduced Order Optimal Control (ODE)
 
@@ -78,6 +79,7 @@ We have provided the full Python source code for the reduced-order optimization 
 > ```
 
 
+--------------------------------------------------------
 --------------------------------------------------------
 
 ## 2. Full non-linear Optimal Control (PDE)

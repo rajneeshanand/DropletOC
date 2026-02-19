@@ -390,8 +390,8 @@ We use an implicit method primarily because the surface tension (capillarity) te
 Let's ignore the disjoining force for a moment and keep only capillarity. The equation simplifies to:
 $$h_t + \partial_x \left( h^3 \partial_x (\gamma \partial_{xx} h) \right) = 0$$
 
-Linearizing around a uniform film $h \approx h_0 + \epsilon \hat{h}$ (where $h_0$ is constant and $\epsilon$ is perturbation coefficient):
-$\hat{h}_t + \gamma h_0^3 \hat{h}_{xxxx} = 0$
+Linearizing around a uniform film $h \approx h_0 + \epsilon \hat{h}$ (where $h_0$ is constant and $\epsilon$ is perturbation coefficient): 
+$\hat{h}+ \gamma h_0^3 \hat{h}_{xxxx}   = 0$
 
 If we take a Fourier mode $\hat{h} \sim e^{ikx}$, the spatial derivative becomes $\partial_x \to ik$. The fourth derivative becomes $k^4$:
 $$\frac{\partial \hat{h}}{\partial t} = -\gamma h_0^3 k^4 \hat{h}$$

@@ -1,5 +1,10 @@
 # Optimal Droplet Transport in a Microchannel
 
+**This project covers optimal control framework for droplet transport: here, we first discuss FEM (using FEniCS) steps for PDE (full nonlinear model) control framework, discretization, and eventually optimization using CMAES technique in detail. We later discuss the steps to run the code and analyse it in HPC**
+
+-----
+-----
+
 **An optimal control framework for efficient fluid transport**
 
 This repository contains a computational framework for designing energy-efficient strategies to transport fluid droplets in confined geometries (see Fig. 1). By integrating **Optimal Control Theory** with **Lubrication Theory**, we address the inverse problem of fluid dynamics: rather than simply observing how a droplet moves, we calculate the precise time-dependent control signals required to transport it to a specific target.
@@ -46,7 +51,7 @@ To validate the reduced model, we solve the transport problem directly using the
 
 ## 1. Reduced Order Optimal Control (ODE)
 
-We have shown the detailed analytical solution of ODE and derivation of dynamics in the paper. Please go through the paper for calculations.
+We have shown the detailed analytical solution of ODE and derivation of dynamics in the paper. Please go through the paper (SI) for detailed mathematics.
 We solved the dynamics and got the optimal control profile.
 The reduced-order model yields an analytical relationship relating the target displacement $X_T$ and target radius $R_T$ to the control parameter $s$:
 

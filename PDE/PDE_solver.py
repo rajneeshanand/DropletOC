@@ -12,7 +12,6 @@ import cma
 np.random.seed(1)                       # For reproducibility
 
 
-
 # If we want to restart the calculation from a previous checkpoint comment on these lines
 
 import os

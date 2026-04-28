@@ -1,0 +1,34 @@
+#!/bin/bash
+
+#SBATCH -p hawkcpu,rapids
+#SBATCH -N 1
+#SBATCH --ntasks=20
+#SBATCH --cpus-per-task=1
+#SBATCH --job-name=PDE_solver_restart
+#SBATCH --mem=32G
+#SBATCH -t 00:03:00
+#SBATCH -o cma_%j.out
+#SBATCH -e cma_%j.err
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-user=raa524@lehigh.edu
+
+module load miniconda3
+
+######--------- Provide the location of the environment where all packages (cma, ufl etc. has been installed)  --------######
+
+source /share/Apps/cascade24v2/gcc-12.4.0/miniconda3-24.7.1-4t4an7an5irjqyz2vwo6nvmmwb3cjb4n/etc/profile.d/conda.sh
+conda activate fenics19
+
+######--------- Make a folder and paste all the codes and provide the location of the files --------######
+
+cd ~/mvk2_proj/raa524/translated_code
+
+######--------- Provide name of main file (PDE_solver) and params.txt --------######
+
+python PDE_solver.py params.txt
+
+
+###------ Make ensure in params.txt, there will be only three lines -- each line contains one value ------###
+# value of target position <--- first line
+# value of target size     <--- second line
+# value of surface tension <--- third line

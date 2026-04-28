@@ -5,6 +5,9 @@
 -----
 -----
 
+# Theory
+
+
 **An optimal control framework for efficient fluid transport**
 
 This repository contains a computational framework for designing energy-efficient strategies to transport fluid droplets in confined geometries (see Fig. 1). By integrating **Optimal Control Theory** with **Lubrication Theory**, we address the inverse problem of fluid dynamics: rather than simply observing how a droplet moves, we calculate the precise time-dependent control signals required to transport it to a specific target.

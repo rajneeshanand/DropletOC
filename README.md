@@ -616,11 +616,11 @@ Before running the code on the cluster (e.g., Hawk), we must set up the environm
    - Create a fresh environment. For example, using Python 3.9: ```conda create -n fenics19 python=3.9 -y``` then ```conda activate fenics19```
    - Install FEniCS and scientific stack via conda (from inside the ```fenics19```): ```conda install -c conda-forge fenics=2019.1.0 numpy scipy matplotlib mpi4py -y```
    - cma is easiest to install from pip: ```pip install cma```
-   - For verification of all packages, run it on the terminal:  ```python -c "import fenics, cma, numpy, scipy, matplotlib; print('All Okay!')"```
+   - For verification of all packages, run it on the terminal:  ```python -c "import fenics, cma, numpy, scipy, matplotlib; print('All librareis have been installed!')"```
 
 3. Activate Environment: Activate the conda or virtual environment that contains your dependencies.
 
 At this point, Python can import ```fenics, numpy, matplotlib, and other packages would be installed```.
 
-**Step 4: Launching the solver ```(PDE_solver.job)```** 
-Do not need to run the Python script manually. The provided Slurm script ```PDE_solver.job``` handles the workflow.
+**Step 4: Launching the solver ```(sbatch pde.job)```** 
+Do not need to run the Python script manually. The provided Slurm script ```pde.job``` handles the workflow.

@@ -173,3 +173,4 @@ plt.tight_layout()
 #plt.savefig('clf_single_panel.pdf', dpi=300, bbox_inches='tight')
 plt.savefig('clf_single_panel.png', dpi=300, bbox_inches='tight')
 print("Single panel figure saved!")
+

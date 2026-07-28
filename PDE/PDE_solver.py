@@ -259,7 +259,7 @@ def thin_film_mobility(height_field):
     h_cubed = height_field**3                                              # h^3 term
     h_fourth = height_field * h_cubed                                      # h^4 term
 
-    base_mobility = h_cubed / (3.0 * viscosity)                            # base mobility expression
+    base_mobility = h_cubed / (12.0 * viscosity)                            # base mobility expression
 
     return (h_fourth * base_mobility) / (                                  # regularized mobility
         h_fourth + regularization_eps * base_mobility
@@ -376,7 +376,7 @@ def run_forward_simulation(
     initial_stress = total_interfacial_stress(height_prev, curvature_prev, control_offset, control_gradient)
 
     dissipation_cost = (                                                              # Initial viscous dissipation contribution
-        0.5 * time_step * assemble(height_prev**3 * initial_stress.dx(0)**2 * dx) / (3.0 * float(viscosity))
+        0.5 * time_step * assemble(height_prev**3 * initial_stress.dx(0)**2 * dx) / (12.0 * float(viscosity))
     )
 
     # Interpolate control in time
@@ -441,7 +441,7 @@ def run_forward_simulation(
         # Increment viscous dissipation
         stress_now = total_interfacial_stress(height_curr, curvature_curr, control_offset, control_gradient)
 
-        dissipation_cost += (weight * time_step * assemble(height_curr**3 * stress_now.dx(0)**2 * dx) / (3.0 * float(viscosity)))
+        dissipation_cost += (weight * time_step * assemble(height_curr**3 * stress_now.dx(0)**2 * dx) / (12.0 * float(viscosity)))
 
         # Output diagnostics and visualization
         if write_output and (step_counter % output_stride == 0):

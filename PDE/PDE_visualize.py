@@ -334,7 +334,7 @@ def run_forward_simulation(control_sequence, initial_profile, write_output=False
     dissipation_cost = (
         0.5 * time_step
         * assemble(height_prev**3 * initial_stress.dx(0)**2 * dx)
-        / (3.0 * float(viscosity))
+        / (12.0 * float(viscosity))
     )
 
     # Interpolate control in time
@@ -408,7 +408,7 @@ def run_forward_simulation(control_sequence, initial_profile, write_output=False
         dissipation_cost += (
             weight * time_step
             * assemble(height_curr**3 * stress_now.dx(0)**2 * dx)
-            / (3.0 * float(viscosity))
+            / (12.0 * float(viscosity))
         )
 
         # Track max height

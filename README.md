@@ -624,3 +624,54 @@ At this point, Python can import ```fenics, numpy, matplotlib, and other package
 
 **Step 4: Launching the solver ```(sbatch pde.job)```** 
 Do not need to run the Python script manually. The provided Slurm script ```pde.job``` handles the workflow.
+
+---------------------------
+
+## Part IV: Cross-validation, applying ODE controls to the PDE
+
+After we get the ODE controls from PMP, we want to know if they actually work on the real system, not just the simplified two-mode version. So we take the optimal control policy that came out of the ODE and feed it back into the full PDE simulation in a receding horizon way. That means at every step we look at the current PDE state $X(t)$ and $R(t)$, solve the ODE costate equations forward for whatever time is left, get the optimal controls $G_0^*$ and $\Delta G^*$ from that, and apply them to the PDE for one step. Then we repeat this at the next step using the new PDE state. Basically the ODE is re-planning constantly using the actual PDE measurements instead of just running open loop.
+
+The point of doing this is to check how good the two-mode Galerkin reduction really is once things like surface tension, curvature, and the higher modes we threw away are all active in the full simulation. If the ODE controls still drive the PDE close to the target, that is a good sign the reduced model is capturing the right physics.
+
+### Files used for cross-validation
+
+All of this lives in the `CrossValidated/` folder:
+
+* **`CLF_on_PDE.py`** — the main script. It solves the full PDE forward in time, and at each step it calls the ODE costate solver to get the receding horizon PMP controls (there is also a `--mode clf` option that uses a Lyapunov style feedback controller instead of the PMP one, mainly for comparison). This is the script that actually runs the simulation.
+* **`params.txt`** — same as the PDE folder, one line each for $X_T$, $R_T$, $\gamma$.
+* **`plot_crossvalidation_figure.py`** — reads the output `.dat` files from the run folders and makes the summary figure (controls, state trajectories, and a cost comparison bar chart) shown in the paper.
+* **`animated_crossvalidation.py`** — same idea but makes an animation (gif) of the droplet shape evolving over time instead of a static figure.
+
+### How to run it
+
+**Step 1:** Set your target values in `params.txt` (one target per file, so if you want to test multiple $X_T$ cases you need to run the script once per target, changing `params.txt` each time or pointing to a different file).
+
+**Step 2:** Run the solver from inside `CrossValidated/`:
+
+```
+python CLF_on_PDE.py params.txt --mode pmp
+```
+
+Use `--mode clf` instead if you want the feedback controller comparison. You can also override defaults like viscosity, time horizon, or step size with flags, run `python CLF_on_PDE.py --help` to see all of them.
+
+This creates an output folder named something like `PMP_on_PDE_XT0p75_RT2p5_gamma0p1/` (the name is built from your target values), with a `rundir/` subfolder inside containing:
+* `X.dat`, `R_moment.dat`, `R_support.dat` — position and radius over time
+* `controls.dat` — the applied controls $G_0(t)$, $\Delta G(t)$ over time
+* `cost.dat` — running dissipation cost
+* `height.pvd` and a bunch of `.vtu` files — the full film height field at each saved step, viewable in ParaView
+
+Repeat Step 2 for each target case you want (for example $X_T = 0.25, 0.5, 0.75$), each one lands in its own `PMP_on_PDE_...` folder.
+
+**Step 3:** Once you have two or more of these run folders sitting next to `plot_crossvalidation_figure.py`, just run:
+
+```
+python plot_crossvalidation_figure.py
+```
+
+This script has a `cases` list near the top with the folder names and target values hardcoded, so make sure those match the folders you actually generated before running it. It will read the `.dat` files from each `rundir/` and produce `cross_validation_figure.png`, a three panel figure: controls applied, state trajectories with targets marked, and a bar chart comparing dissipation and terminal cost across the cases.
+
+For animation:
+
+```
+python animated_crossvalidation.py
+```

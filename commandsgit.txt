@@ -1,0 +1,13 @@
+add single file in folder
+
+git add PDE/params.txt
+git commit -m "some explanation"
+git push
+
+
+
+add all
+git add .
+
+to check what has been modified:
+git status

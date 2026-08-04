@@ -1,0 +1,4 @@
+# FEniCS/dijitso JIT compilation cache (machine-generated build artifacts)
+.dijitso_cache/
+__pycache__/
+*.pyc

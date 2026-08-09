@@ -3,9 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import root_scalar
 from scipy.integrate import trapezoid, cumulative_trapezoid
 
-# --------------------------------------------------
 # Parameters
-# --------------------------------------------------
 
 X_T = 0.5
 R_0 = 2.0
@@ -13,9 +11,8 @@ R_T = 2.5
 T   = 1.0
 MU  = 0.5
 
-# --------------------------------------------------
 # Define functions
-# --------------------------------------------------
+
 
 def F_s(s):
     val = (33*s**2) / (250*np.sinh(s)**2)
@@ -39,9 +36,8 @@ s = sol.root
 
 print(f"Solved s = {s}")
 
-# --------------------------------------------------
 # State profile construction
-# --------------------------------------------------
+
 
 Nx = 1500
 x = np.linspace(0, 1, Nx)
@@ -58,9 +54,7 @@ t_x = T * cumulative_integral / I
 
 R_t = rho_x
 
-# --------------------------------------------------
 # Compute X(t)
-# --------------------------------------------------
 
 p0 = X_T * 700 / (33 * tau_T)
 
@@ -69,20 +63,18 @@ X_tau = (33/700) * p0 * tau_vals
 
 X_t = np.interp(np.linspace(0, T, Nx), t_x, X_tau)
 
-# --------------------------------------------------
 # Plot
-# --------------------------------------------------
 
 plt.figure(figsize=(9, 6))
 ax = plt.gca()
 
-# --- Curves (different colors than controls plot)
+#  Curves (different colors than controls plot)
 ax.plot(t_x/T, R_t, color='#d62728', linewidth=5, label=r'$R(t)$')   # red
 ax.plot(np.linspace(0,1,Nx), X_t, color='#1f77b4', linewidth=5, label=r'$X(t)$')  # blue
 
 ax.set_xlim(0, 1)
 
-# --- X label with arrow
+#  X label with arrow
 ax.set_xlabel(r'$t$', fontsize=24, fontweight='bold', fontfamily='cambria')
 
 ax.annotate(
@@ -109,7 +101,7 @@ ax.legend(
     edgecolor='white'
 )
 
-# --- Spine thickness
+#  Spine thickness
 for spine in ax.spines.values():
     spine.set_linewidth(2.5)
 
@@ -118,14 +110,14 @@ ax.spines['left'].set_linewidth(3)
 ax.spines['top'].set_linewidth(3)
 ax.spines['right'].set_linewidth(3)
 
-# --- Tick label styling
+#  Tick label styling
 for label in ax.get_xticklabels() + ax.get_yticklabels():
     label.set_fontsize(20)
     label.set_fontweight('bold')
     label.set_fontfamily('cambria')
     label.set_color('black')
 
-# --- Tick geometry
+#  Tick geometry
 ax.tick_params(
     axis='both',
     which='major',

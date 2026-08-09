@@ -4,9 +4,7 @@ from matplotlib import rcParams
 from matplotlib.lines import Line2D
 from scipy.integrate import solve_ivp
 
-# ============================================================
 # Format
-# ============================================================
 rcParams['font.family'] = 'serif'
 rcParams['font.serif'] = ['Times New Roman', 'DejaVu Serif']
 rcParams['mathtext.fontset'] = 'stix'
@@ -20,9 +18,7 @@ rcParams['axes.linewidth'] = 0.8
 rcParams['xtick.direction'] = 'in'
 rcParams['ytick.direction'] = 'in'
 
-# ============================================================
 # Parameters
-# ============================================================
 mu = 0.1; X_T = 0.5; R_T = 2.5; A_w = 1e3; B_w = 1e3
 p1 = A_w / X_T**2; p2 = B_w / R_T**2
 
@@ -48,9 +44,8 @@ def dynamics(t, s):
     Xd, Rd = closed_loop_vec(X, R)
     return [Xd, Rd]
 
-# ============================================================
+# 
 # Vector field grid
-# ============================================================
 nx, ny = 24, 24
 X_grid = np.linspace(-0.35, 1.35, nx)
 R_grid = np.linspace(1.0, 4.0, ny)
@@ -70,9 +65,7 @@ speed_safe = np.where(speed > 0, speed, 1.0)
 Un = U / speed_safe
 Vn = V / speed_safe
 
-# ============================================================
 # Trajectories
-# ============================================================
 ics = [
     (0.0, 2.0),
     (-0.2, 1.5),
@@ -96,9 +89,7 @@ for ic in ics:
                     method='RK45', max_step=5e-5, rtol=1e-12, atol=1e-14)
     trajs.append(sol)
 
-# ============================================================
 # FIGURE: Single panel
-# ============================================================
 fig, ax = plt.subplots(1, 1, figsize=(4.5, 3.8))
 
 # Background shading: log(T) contourf

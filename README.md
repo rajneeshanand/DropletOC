@@ -683,3 +683,9 @@ python animated_crossvalidation.py
     <strong>Fig. 3:</strong> Droplet shape evolving under the ODE-derived optimal controls applied to the full PDE.
   </em>
 </p>
+
+-----
+
+## License
+
+This project is licensed under the MIT License, see the [LICENSE](LICENSE) file for details.

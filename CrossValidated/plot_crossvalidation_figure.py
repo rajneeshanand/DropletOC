@@ -38,7 +38,7 @@ cases = [
     {"XT": 0.25, "color": "#2ca02c", "label": r"$X_T=0.25$",
      "dir": "PMP_on_PDE_XT0p25_RT2p5_gamma0p1/rundir"},
     {"XT": 0.5,  "color": "#1f77b4", "label": r"$X_T=0.5$",
-     "dir": "PMP_on_PDE_XT0p5_RT2p5_gamma0p1/rundir"},
+     "dir": "PMP_on_PDE_XT0p5_RT2p5_gamma0p1_g01_c200/rundir"},
     {"XT": 0.75,  "color": "#d62728", "label": r"$X_T=0.75$",
      "dir": "PMP_on_PDE_XT0p75_RT2p5_gamma0p1/rundir"},
 ]
@@ -251,4 +251,5 @@ for ax in axes:
 plt.tight_layout(w_pad=2.5)
 
 plt.savefig("cross_validation_figure.png", dpi=300, bbox_inches='tight')
+plt.savefig("fig_bar_summary.pdf", bbox_inches="tight")
 

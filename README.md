@@ -1,4 +1,4 @@
-# Optimal Droplet Transport in a Microchannel
+# Optimal Control of Droplet Transport in a Microchannel
 
 **This project covers optimal control framework for droplet transport: here, we first discuss FEM (using FEniCS) steps for PDE (full nonlinear model) control framework, discretization, and eventually optimization using CMAES technique in detail. We later discuss the steps to run the code and analyse it in HPC**
 

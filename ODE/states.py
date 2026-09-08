@@ -5,7 +5,7 @@ from scipy.integrate import trapezoid, cumulative_trapezoid
 
 # Parameters
 
-X_T = 0.5
+X_T = 0.75
 R_0 = 2.0
 R_T = 2.5
 T   = 1.0
@@ -15,7 +15,7 @@ MU  = 0.5
 
 
 def F_s(s):
-    val = (33*s**2) / (250*np.sinh(s)**2)
+    val = (33*s**2) / (500*np.sinh(s)**2)
     val *= ( (R_T/R_0)*(2*np.cosh(s) - R_T/R_0) - 1 )
     return np.sqrt(np.maximum(val, 0.0))
 

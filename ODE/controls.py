@@ -8,7 +8,7 @@ from scipy.integrate import cumulative_trapezoid
 
 # Parameters
 
-X_T = 0.5
+X_T = 0.75
 R_0 = 2.0
 R_T = 2.5
 T   = 1.0
@@ -16,7 +16,7 @@ MU  = 0.5
 
 # Define functions
 def F_s(s):
-    val = (33*s**2)/(250*np.sinh(s)**2)
+    val = (33*s**2)/(500*np.sinh(s)**2)
     val *= ((R_T/R_0)*(2*np.cosh(s) - R_T/R_0) - 1)
     return np.sqrt(np.maximum(val, 0.0))
 
@@ -62,7 +62,7 @@ drho_dx = np.gradient(rho_x, x)
 drho_dtau = drho_dx / tau_T
 
 # Controls
-P_tau = (14/5) * drho_dtau
+P_tau = (7/5) * drho_dtau
 p_0 = X_T * 700 / (33 * tau_T)
 
 G0_tau = -(5/6) * P_tau * (rho_x**2)
